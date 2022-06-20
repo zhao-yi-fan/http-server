@@ -1,6 +1,6 @@
 {
   "name": "zyf-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "install: `npm install zyf-server -g`",
   "main": "index.js",
   "bin": {
