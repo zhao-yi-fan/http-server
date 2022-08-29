@@ -8,9 +8,9 @@ let parser = { // 默认值
   host: 'localhost',
   dir: process.cwd() // 默认为当前cmd的工作目录
 }
-commander.on('--help',function(){
+commander.on('--help', function () {
   console.log('\r\nExample:');
-    console.log('  zyf-server -p 3000 -o localhost');
+  console.log('  zyf-server -p 3000 -o localhost');
 })
 
 let args = commander
