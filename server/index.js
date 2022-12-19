@@ -10,11 +10,16 @@ const ejs = require('ejs');
 const chalk = require('chalk');
 const debug = require('debug')('dev');
 
+// vue提供的服务端渲染的包
+const VueServerRenderer = require('vue-server-renderer')
+
 const stat = promisify(fs.stat);
 const access = promisify(fs.access);
 const readdir = promisify(fs.readdir);
 let template = fs.readFileSync(path.join(__dirname, './template.html'), 'utf8');
+let SSRTemplate = fs.readFileSync(path.join(__dirname, './template.ssr.html'), 'utf8');
 
+const getApp = require('./app.js');
 class Server {
   constructor(config) {
     this.config = config;
@@ -45,14 +50,24 @@ class Server {
             }
             return { name: item, path: p };
           });
-          let renderStr = ejs.render(this.template, { dirs });
-          res.setHeader('Content-Type', 'text/html; charset=utf8');
-          res.end(renderStr);
+          const render = VueServerRenderer.createRenderer({
+            template: SSRTemplate
+          });
+
+          render.renderToString(getApp({ dirs }), function (err, html) {
+            res.setHeader('Content-Type', 'text/html; charset=utf8');
+            res.end(html)
+          })
+
+          // let renderStr = ejs.render(this.template, { dirs });
+          // res.setHeader('Content-Type', 'text/html; charset=utf8');
+          // res.end(renderStr);
         }
       } else {
         this.sendFile(req, res, realPath, statObj);
       }
     } catch (e) {
+      console.log(e,'e===');
       debug(e);
       this.sendError(req, res);
     }

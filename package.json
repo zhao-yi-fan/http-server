@@ -6,6 +6,10 @@
   "bin": {
     "zyf-server": "./bin/www.js"
   },
+  "files": [
+    "bin",
+    "server"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,6 +21,8 @@
     "commander": "^3.0.1",
     "debug": "^4.1.1",
     "ejs": "^2.6.2",
-    "mime": "^2.4.4"
+    "mime": "^2.4.4",
+    "vue": "2.7.14",
+    "vue-server-renderer": "^2.7.14"
   }
 }
