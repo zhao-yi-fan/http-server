@@ -1,14 +1,15 @@
 {
   "name": "zyf-server",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "node.js http server",
   "main": "index.js",
   "bin": {
-    "zyf-server": "./bin/www.js"
+    "zyf-server": "./bin/httpServer.js"
   },
   "files": [
     "bin",
-    "server"
+    "server",
+    "build"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,12 +18,23 @@
   "author": "zhaoyifan",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.20.5",
+    "@babel/preset-env": "^7.20.2",
+    "babel-loader": "8.0.6",
     "chalk": "^2.4.2",
     "commander": "^3.0.1",
+    "css-loader": "5.2.7",
     "debug": "^4.1.1",
     "ejs": "^2.6.2",
+    "element-ui": "^2.15.12",
+    "lodash": "^4.17.21",
     "mime": "^2.4.4",
     "vue": "2.7.14",
-    "vue-server-renderer": "^2.7.14"
+    "vue-loader": "15.10.1",
+    "vue-server-renderer": "^2.7.14",
+    "vue-style-loader": "^4.1.3",
+    "webpack": "^4.46.0",
+    "webpack-cli": "4.10.0",
+    "webpack-node-externals": "3.0.0"
   }
 }

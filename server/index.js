@@ -18,8 +18,10 @@ const access = promisify(fs.access);
 const readdir = promisify(fs.readdir);
 let template = fs.readFileSync(path.join(__dirname, './template.html'), 'utf8');
 let SSRTemplate = fs.readFileSync(path.join(__dirname, './template.ssr.html'), 'utf8');
-
-const getApp = require('./app.js');
+let serverBundle = fs.readFileSync(path.join(__dirname, '../build/server.bundle.js'), 'utf8');
+const render = VueServerRenderer.createBundleRenderer(serverBundle, {
+  template: SSRTemplate
+});
 class Server {
   constructor(config) {
     this.config = config;
@@ -50,12 +52,13 @@ class Server {
             }
             return { name: item, path: p };
           });
-          const render = VueServerRenderer.createRenderer({
-            template: SSRTemplate
-          });
 
-          render.renderToString(getApp({ dirs }), function (err, html) {
+
+          const context = { dirs }
+          render.renderToString(context, (err, html) => {
+            console.log(err, 'err===');
             res.setHeader('Content-Type', 'text/html; charset=utf8');
+            console.log(html, 'html===');
             res.end(html)
           })
 
@@ -67,7 +70,7 @@ class Server {
         this.sendFile(req, res, realPath, statObj);
       }
     } catch (e) {
-      console.log(e,'e===');
+      console.log(e, 'e===');
       debug(e);
       this.sendError(req, res);
     }
