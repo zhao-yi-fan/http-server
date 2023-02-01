@@ -9,6 +9,7 @@ const mime = require('mime');
 const ejs = require('ejs');
 const chalk = require('chalk');
 const debug = require('debug')('dev');
+const open = require('open');
 
 // vue提供的服务端渲染的包
 const VueServerRenderer = require('vue-server-renderer')
@@ -140,8 +141,12 @@ class Server {
         console.log(chalk.red(` Error: `) + `listen EADDRINUSE :::${this.config.port}`);
       }
     });
-    server.listen(this.config.port, () => {
-      console.log(`Server start: http://${this.config.host}:${chalk.green(this.config.port)}`);
+    server.listen(this.config.port, async () => {
+      const website = `http://${this.config.host}:${chalk.green(this.config.port)}`
+      console.log(`Server start: ${website}`);
+      // if (this.config.open) {
+        await open(`http://${this.config.host}:${this.config.port}`, { app: { name: 'google chrome' } });
+      // }
     });
   }
 }

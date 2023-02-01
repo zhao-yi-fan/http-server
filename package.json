@@ -1,6 +1,6 @@
 {
   "name": "zyf-server",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "node.js http server",
   "main": "index.js",
   "bin": {
@@ -29,6 +29,7 @@
     "element-ui": "^2.15.12",
     "lodash": "^4.17.21",
     "mime": "^2.4.4",
+    "open": "^8.4.0",
     "vue": "2.7.14",
     "vue-loader": "15.10.1",
     "vue-server-renderer": "^2.7.14",

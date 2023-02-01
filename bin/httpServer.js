@@ -16,8 +16,9 @@ commander.on('--help', function () {
 let args = commander
   .version(package.version)
   .option('-p,--port <v>', 'server port')
-  .option('-o,--host <v>', 'server hostname')
-  .option('-d,--dir <v>', 'server directory')
+  .option('-h,--host <v>', 'server hostname')
+  .option('-d,--dir <v>', 'server directory (absolute path or relative path)') // 绝对路径或者相对路径 absolute path or relative path
+  // .option('-o,--open <v>', 'open browser')
   .parse(process.argv); // 要解析的对象
 
 parser = { ...parser, ...args }; // 合并默认属性和配置后的属性
