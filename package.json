@@ -1,22 +1,48 @@
 {
   "name": "zyf-server",
-  "version": "1.0.5",
-  "description": "node.js http server",
-  "main": "index.js",
+  "version": "1.1.0",
+  "description": "A modern HTTP static file server with Vue SSR directory listing, built for developers",
+  "main": "server/index.js",
   "bin": {
     "zyf-server": "./bin/httpServer.js"
   },
   "files": [
     "bin",
     "server",
-    "build"
+    "build",
+    "CHANGELOG.md",
+    "README.md"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack",
+    "dev": "webpack --watch",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": [],
+  "keywords": [
+    "http-server",
+    "static-server",
+    "file-server",
+    "vue-ssr",
+    "cli-tool",
+    "development-server",
+    "local-server",
+    "webpack",
+    "vue"
+  ],
   "author": "zhaoyifan",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhaoyifan/http-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zhaoyifan/http-server/issues"
+  },
+  "homepage": "https://github.com/zhaoyifan/http-server#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
     "@babel/core": "^7.23.0",
     "@babel/preset-env": "^7.23.0",
