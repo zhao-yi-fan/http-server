@@ -1,5 +1,5 @@
 const path = require('path');
-let VueLoaderPlugin = require('vue-loader/lib/plugin')
+const { VueLoaderPlugin } = require('vue-loader')
 const nodeExternals = require('webpack-node-externals')
 
 module.exports = {
@@ -9,9 +9,12 @@ module.exports = {
     server: path.resolve(__dirname, 'website/app.js')
   },
   output: {
-    libraryTarget: 'commonjs2', // module.exports = server-entry.js 导出给node服务端用
+    library: {
+      type: 'commonjs2'
+    },
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'build'),
+    clean: true
   },
   externals: [nodeExternals()], // 不打包node_modules中的文件
   plugins: [
@@ -25,7 +28,11 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              '@babel/preset-env'
+              ['@babel/preset-env', {
+                targets: {
+                  node: 'current'
+                }
+              }]
             ],
             plugins: [
               
