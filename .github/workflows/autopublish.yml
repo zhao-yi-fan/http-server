@@ -1,10 +1,11 @@
-name: NPM Package
+name: NPM Package (Legacy)
 on:
-  push:
-    branches:
-      - master
-    tags:
-      - 'v*'
+  # Disabled in favor of auto-version.yml
+  # push:
+  #   branches:
+  #     - master
+  #   tags:
+  #     - 'v*'
 
 jobs:
   publish-npm:
