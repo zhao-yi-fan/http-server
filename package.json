@@ -34,12 +34,12 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zhaoyifan/http-server.git"
+    "url": "https://github.com/zhao-yi-fan/http-server.git"
   },
   "bugs": {
-    "url": "https://github.com/zhaoyifan/http-server/issues"
+    "url": "https://github.com/zhao-yi-fan/http-server/issues"
   },
-  "homepage": "https://github.com/zhaoyifan/http-server#readme",
+  "homepage": "https://github.com/zhao-yi-fan/http-server#readme",
   "engines": {
     "node": ">=14.0.0"
   },
