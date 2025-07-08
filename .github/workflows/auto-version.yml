@@ -51,14 +51,30 @@ jobs:
             echo "type=${{ github.event.inputs.version_type }}" >> $GITHUB_OUTPUT
           else
             commit_msg="${{ github.event.head_commit.message }}"
+            
+            # 检查是否是 merge commit，如果是则查看最近的非merge提交
+            if [[ $commit_msg =~ ^Merge ]]; then
+              echo "检测到 Merge commit，查找最近的实际提交..."
+              # 获取最近的非merge提交信息
+              recent_commit=$(git log --no-merges -1 --pretty=format:"%s")
+              echo "最近的实际提交: $recent_commit"
+              commit_msg="$recent_commit"
+            fi
+            
+            echo "分析提交信息: $commit_msg"
+            
             if [[ $commit_msg =~ ^feat(\(.+\))?!: ]] || [[ $commit_msg =~ BREAKING\ CHANGE ]]; then
               echo "type=major" >> $GITHUB_OUTPUT
+              echo "检测到 major 版本升级"
             elif [[ $commit_msg =~ ^feat(\(.+\))?: ]]; then
               echo "type=minor" >> $GITHUB_OUTPUT
+              echo "检测到 minor 版本升级"
             elif [[ $commit_msg =~ ^fix(\(.+\))?: ]] || [[ $commit_msg =~ ^chore(\(.+\))?: ]] || [[ $commit_msg =~ ^docs(\(.+\))?: ]]; then
               echo "type=patch" >> $GITHUB_OUTPUT
+              echo "检测到 patch 版本升级"
             else
               echo "type=none" >> $GITHUB_OUTPUT
+              echo "未匹配任何版本升级规则，跳过"
             fi
           fi
           
