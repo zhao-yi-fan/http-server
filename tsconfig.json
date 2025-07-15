@@ -1,0 +1,66 @@
+{
+  "compilerOptions": {
+    // 基础配置
+    "target": "ES2022",                     // 现代JS语法支持
+    "module": "commonjs",                   // Node.js兼容
+    "lib": ["ES2022", "DOM"],              // 标准库支持
+    "moduleResolution": "node",             // Node.js模块解析
+    "allowSyntheticDefaultImports": true,   // 兼容性导入
+    "esModuleInterop": true,               // ES模块互操作
+    
+    // 输出配置
+    "outDir": "./dist",                     // 输出目录
+    "rootDir": ".",                         // 项目根目录
+    "declaration": true,                    // 生成声明文件
+    "declarationMap": true,                 // 声明文件映射
+    "sourceMap": true,                      // 源码映射
+    
+    // 类型检查严格性
+    "strict": true,                         // 启用所有严格检查
+    "noImplicitAny": true,                 // 禁止隐式any
+    "noImplicitReturns": true,             // 函数必须有返回值
+    "noUnusedLocals": true,                // 禁止未使用的局部变量
+    "noUnusedParameters": true,            // 禁止未使用的参数
+    "exactOptionalPropertyTypes": true,     // 严格可选属性
+    
+    // 现代化特性
+    "useDefineForClassFields": true,        // 类字段定义
+    "allowUnusedLabels": false,            // 禁止未使用标签
+    "allowUnreachableCode": false,         // 禁止不可达代码
+    
+    // 路径映射
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/types/*": ["src/types/*"],
+      "@/server/*": ["src/server/*"],
+      "@/cli/*": ["src/cli/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/config/*": ["src/config/*"]
+    },
+    
+    // 增量编译
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
+    
+    // 其他配置
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*",
+    "website/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ],
+  "ts-node": {
+    "esm": false,
+    "experimentalSpecifierResolution": "node"
+  }
+} 
