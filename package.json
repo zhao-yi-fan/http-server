@@ -16,7 +16,7 @@
   "scripts": {
     "build": "npm run clean && npm run build:ts && npm run copy:assets && npm run build:webpack",
     "build:ts": "tsc && tsc-alias",
-    "copy:assets": "cpy 'src/templates/**' 'dist/src/' --parents",
+    "copy:assets": "cpy 'src/templates/*' 'dist/src/templates/'",
     "build:webpack": "webpack",
     "dev": "concurrently \"npm run dev:ts\" \"npm run dev:webpack\"",
     "dev:ts": "tsc --watch",
