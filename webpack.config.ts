@@ -8,6 +8,7 @@ import { Configuration } from 'webpack';
 // @ts-ignore
 import { VueLoaderPlugin } from 'vue-loader';
 import nodeExternals from 'webpack-node-externals';
+import TerserPlugin from 'terser-webpack-plugin';
 
 const config: Configuration = {
   target: 'node',
@@ -82,10 +83,35 @@ const config: Configuration = {
         test: /\.vue$/,
         loader: 'vue-loader',
       },
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'vue-style-loader',
+          },
+          'css-loader',
+          'sass-loader',
+        ],
+      },
     ],
   },
   optimization: {
-    minimize: true, // 生产环境压缩
+    minimize: true,  // ✅ 启用优化
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: false,    // ✅ 不压缩代码逻辑
+          mangle: false,      // ✅ 不混淆变量名
+          format: {
+            comments: false,  // ✅ 移除所有注释（包括Webpack生成的）
+            beautify: true,   // ✅ 保持代码格式化
+            indent_level: 2,  // ✅ 设置缩进
+          },
+        },
+        extractComments: false, // ✅ 不提取注释到单独文件
+      }),
+    ],
+    concatenateModules: false,
   },
   devtool: 'source-map', // 生成source map
 };
