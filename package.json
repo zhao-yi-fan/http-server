@@ -1,6 +1,6 @@
 {
   "name": "zyf-server",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "A modern HTTP static file server with Vue SSR directory listing, built for developers",
   "main": "dist/index.js",
   "bin": {
