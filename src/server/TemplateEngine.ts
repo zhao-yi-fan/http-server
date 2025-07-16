@@ -28,7 +28,7 @@ export class TemplateEngine {
 
     // 读取Vue SSR bundle
     const serverBundle = readFileSync(
-      join(__dirname, '../../build/server.bundle.js'),
+      join(__dirname, '../../../build/server.bundle.js'),
       'utf8'
     );
 
