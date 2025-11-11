@@ -1,0 +1,139 @@
+name: Auto Version & Publish
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version type (patch, minor, major)'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  auto-version:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          registry-url: https://registry.npmjs.org/
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build project
+        run: npm run build
+        
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+      - name: Determine version bump type
+        id: version-type
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "type=${{ github.event.inputs.version_type }}" >> $GITHUB_OUTPUT
+          else
+            commit_msg="${{ github.event.head_commit.message }}"
+            
+            # 检查是否是 merge commit，如果是则查看最近的非merge提交
+            if [[ $commit_msg =~ ^Merge ]]; then
+              echo "检测到 Merge commit，查找最近的实际提交..."
+              # 获取最近的非merge提交信息
+              recent_commit=$(git log --no-merges -1 --pretty=format:"%s")
+              echo "最近的实际提交: $recent_commit"
+              commit_msg="$recent_commit"
+            fi
+            
+            echo "分析提交信息: $commit_msg"
+            
+            if [[ $commit_msg =~ ^feat(\(.+\))?!: ]] || [[ $commit_msg =~ BREAKING\ CHANGE ]]; then
+              echo "type=major" >> $GITHUB_OUTPUT
+              echo "检测到 major 版本升级"
+            elif [[ $commit_msg =~ ^feat(\(.+\))?: ]]; then
+              echo "type=minor" >> $GITHUB_OUTPUT
+              echo "检测到 minor 版本升级"
+            elif [[ $commit_msg =~ ^fix(\(.+\))?: ]] || [[ $commit_msg =~ ^chore(\(.+\))?: ]] || [[ $commit_msg =~ ^docs(\(.+\))?: ]]; then
+              echo "type=patch" >> $GITHUB_OUTPUT
+              echo "检测到 patch 版本升级"
+            else
+              echo "type=none" >> $GITHUB_OUTPUT
+              echo "未匹配任何版本升级规则，跳过"
+            fi
+          fi
+          
+      - name: Bump version
+        id: version
+        if: steps.version-type.outputs.type != 'none'
+        run: |
+          npm version ${{ steps.version-type.outputs.type }} --no-git-tag-version
+          new_version=$(node -p "require('./package.json').version")
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+          echo "tag=v$new_version" >> $GITHUB_OUTPUT
+          
+      - name: Update CHANGELOG
+        if: steps.version-type.outputs.type != 'none'
+        run: |
+          echo "## [${{ steps.version.outputs.new_version }}] - $(date +%Y-%m-%d)" > temp_changelog.md
+          echo "" >> temp_changelog.md
+          echo "### 🔄 自动发布" >> temp_changelog.md
+          echo "- 基于提交信息自动升级版本" >> temp_changelog.md
+          echo "- 提交信息: ${{ github.event.head_commit.message }}" >> temp_changelog.md
+          echo "" >> temp_changelog.md
+          cat CHANGELOG.md >> temp_changelog.md
+          mv temp_changelog.md CHANGELOG.md
+          
+      - name: Commit and push changes
+        if: steps.version-type.outputs.type != 'none'
+        run: |
+          git add package.json CHANGELOG.md
+          git commit -m "chore: bump version to ${{ steps.version.outputs.new_version }} [skip ci]"
+          git tag ${{ steps.version.outputs.tag }}
+          git push origin master
+          git push origin ${{ steps.version.outputs.tag }}
+          
+      - name: Publish to NPM
+        if: steps.version-type.outputs.type != 'none'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          
+      - name: Create GitHub Release
+        if: steps.version-type.outputs.type != 'none'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          release_name: Release ${{ steps.version.outputs.tag }}
+          body: |
+            ## 🎉 自动发布 ${{ steps.version.outputs.tag }}
+            
+            **版本类型**: ${{ steps.version-type.outputs.type }}
+            **触发提交**: ${{ github.event.head_commit.message }}
+            
+            ### 📦 安装
+            ```bash
+            npm install -g zyf-server@${{ steps.version.outputs.new_version }}
+            ```
+            
+            ### 📋 完整更新日志
+            查看 [CHANGELOG.md](./CHANGELOG.md) 获取详细信息
+          draft: false
+          prerelease: false 
